@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Details — PaceUp</title>
+  <style>
+/* ============================================================
+   styles.css — Running Events Platform Design System
+   Fonts: Syne (display) + DM Sans (body)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── CSS Variables ────────────────────────────────────────── */
+:root {
+  --color-primary: #111827;
+  --color-accent: #22c55e;
+  --color-accent-dark: #16a34a;
+  --color-bg: #ffffff;
+  --color-surface: #f9fafb;
+  --color-secondary: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-muted: #9ca3af;
+  --color-text: #111827;
+  --color-text-soft: #6b7280;
+
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.07);
+
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 0.4s cubic-bezier(0.4,0,0.2,1);
+  --nav-h: 68px;
+}
+
+/* ── Dark Mode ────────────────────────────────────────────── */
+html.dark {
+  --color-primary: #f9fafb;
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-secondary: #1e293b;
+  --color-border: #334155;
+  --color-muted: #64748b;
+  --color-text: #f1f5f9;
+  --color-text-soft: #94a3b8;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--transition), color var(--transition);
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: var(--font-body); border: none; background: none; }
+input, select, textarea { font-family: var(--font-body); }
+
+/* ── Typography ───────────────────────────────────────────── */
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
+h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); }
+h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+h3 { font-size: 1.25rem; }
+
+/* ── Layout ───────────────────────────────────────────────── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.container-wide { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 5rem 0; }
+.section-sm { padding: 3rem 0; }
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--nav-h);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow var(--transition), background var(--transition);
+}
+.navbar.scrolled {
+  box-shadow: var(--shadow-md);
+  background: color-mix(in srgb, var(--color-bg) 95%, transparent);
+  backdrop-filter: blur(12px);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--color-text);
+}
+.nav-logo-mark {
+  width: 34px; height: 34px;
+  background: var(--color-accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 1rem;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-soft);
+  transition: color var(--transition);
+  position: relative;
+}
+.nav-link:hover, .nav-link.active { color: var(--color-text); }
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  cursor: pointer;
+}
+.menu-toggle span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.6rem;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--color-accent);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(34,197,94,0.35);
+}
+.btn-dark {
+  background: var(--color-primary);
+  color: white;
+}
+html.dark .btn-dark { background: var(--color-accent); }
+.btn-dark:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-outline {
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text);
+  background: transparent;
+}
+.btn-outline:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(34,197,94,0.06);
+}
+.btn-ghost {
+  color: var(--color-text-soft);
+  padding: 0.5rem 0.75rem;
+}
+.btn-ghost:hover { color: var(--color-text); background: var(--color-secondary); border-radius: 8px; }
+.btn-sm { padding: 0.5rem 1.1rem; font-size: 0.82rem; }
+.btn-lg { padding: 0.9rem 2.2rem; font-size: 1rem; }
+
+/* Icon button */
+.btn-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+.btn-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.btn-edit { color: var(--color-text-soft); }
+.btn-edit:hover { background: #dbeafe; color: #2563eb; }
+.btn-delete { color: var(--color-text-soft); }
+.btn-delete:hover { background: #fee2e2; color: #dc2626; }
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1600&q=80') center/cover no-repeat;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(17,24,39,0.88) 0%, rgba(17,24,39,0.5) 60%, rgba(17,24,39,0.2) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 680px;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34,197,94,0.2);
+  border: 1px solid rgba(34,197,94,0.4);
+  color: #86efac;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  color: white;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2.8rem, 7vw, 5rem);
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+.hero-sub {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.75);
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+.hero-search {
+  display: flex;
+  background: white;
+  border-radius: 100px;
+  overflow: hidden;
+  max-width: 520px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 2rem;
+}
+.hero-search input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: transparent;
+}
+.hero-search .btn { border-radius: 100px; margin: 4px; }
+.hero-badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85);
+  padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.hero-badge:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+.hero-stats {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  z-index: 2;
+  display: flex;
+  gap: 1.5rem;
+}
+.hero-stat {
+  text-align: center;
+  color: white;
+}
+.hero-stat strong { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--color-accent); }
+.hero-stat span { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Event Cards ──────────────────────────────────────────── */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.event-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.card-link { display: block; }
+.card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+.card-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+.event-card:hover .card-img-wrap img { transform: scale(1.05); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-distance {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: rgba(17,24,39,0.8);
+  color: white;
+  backdrop-filter: blur(6px);
+}
+.badge-urgent {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: #dc2626;
+  color: white;
+}
+.badge-accent { background: rgba(34,197,94,0.15); color: var(--color-accent-dark); }
+.card-body { padding: 1.25rem 1.5rem 1.5rem; }
+.card-organizer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.organizer-dot {
+  width: 6px; height: 6px;
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+.card-meta { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1.1rem; }
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.84rem;
+  color: var(--color-text-soft);
+}
+.card-meta-item svg {
+  width: 14px; height: 14px;
+  fill: none; stroke: var(--color-muted);
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+.card-price { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--color-text); }
+.card-cta { font-size: 0.84rem; font-weight: 600; color: var(--color-accent); }
+
+/* Card appear animation */
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card-appear { animation: cardAppear 0.4s ease forwards; }
+
+/* ── Fade-up scroll animation ─────────────────────────────── */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
+/* ── Section Headers ──────────────────────────────────────── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+.section-header h2 { margin-bottom: 0; }
+
+/* ── Categories Grid ──────────────────────────────────────── */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.category-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  display: block;
+}
+.category-card:hover {
+  border-color: var(--color-accent);
+  background: rgba(34,197,94,0.06);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.category-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+.category-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+.category-count { font-size: 0.78rem; color: var(--color-muted); }
+
+/* ── CTA Banner ───────────────────────────────────────────── */
+.cta-banner {
+  background: var(--color-primary);
+  border-radius: var(--radius-xl);
+  padding: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+html.dark .cta-banner { background: var(--color-surface); border: 1px solid var(--color-border); }
+.cta-banner::before {
+  content: '🏃';
+  position: absolute;
+  right: 3rem;
+  font-size: 8rem;
+  opacity: 0.07;
+  pointer-events: none;
+}
+.cta-banner h2 { color: white; margin-bottom: 0.5rem; }
+html.dark .cta-banner h2 { color: var(--color-text); }
+.cta-banner p { color: rgba(255,255,255,0.65); max-width: 400px; }
+html.dark .cta-banner p { color: var(--color-text-soft); }
+
+/* ── Events Page Layout ───────────────────────────────────── */
+.events-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.filter-sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 1.5rem);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+.filter-sidebar h3 { font-size: 0.95rem; margin-bottom: 1.25rem; }
+.filter-group { margin-bottom: 1.5rem; }
+.filter-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-muted);
+  margin-bottom: 0.6rem;
+}
+.filter-select, .filter-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  transition: border-color var(--transition);
+  appearance: none;
+}
+.filter-select:focus, .filter-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+.events-main .toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.result-count { font-size: 0.88rem; color: var(--color-muted); }
+.sort-select {
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  appearance: none;
+}
+.filter-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.3rem 0.75rem;
+  background: rgba(34,197,94,0.12);
+  color: var(--color-accent-dark);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.filter-pill button {
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Event Detail Page ────────────────────────────────────── */
+.event-hero {
+  height: 50vh;
+  min-height: 360px;
+  position: relative;
+  overflow: hidden;
+}
+.event-hero-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.event-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(17,24,39,0.85) 0%, transparent 60%);
+}
+.event-hero-meta {
+  position: absolute;
+  bottom: 2rem; left: 0; right: 0;
+}
+.event-hero-meta h1 { color: white; margin-bottom: 0.75rem; }
+.event-hero-meta .meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+.event-hero-meta .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
+}
+.event-hero-meta .meta-item svg { width: 15px; height: 15px; fill: none; stroke: var(--color-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.event-content-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2.5rem;
+  align-items: start;
+  padding: 3rem 0;
+}
+
+.event-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--color-border); margin-bottom: 2rem; }
+.event-tab-btn {
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition);
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+.event-tab-btn.active { color: var(--color-text); border-bottom-color: var(--color-accent); }
+.event-tab-panel { display: none; }
+.event-tab-panel.active { display: block; }
+
+/* Ticket Widget */
+.ticket-widget {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  position: sticky;
+  top: calc(var(--nav-h) + 1.5rem);
+}
+.ticket-widget h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.countdown-box {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+.countdown-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted); margin-bottom: 0.5rem; }
+.countdown { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-display); }
+.countdown-unit { display: flex; flex-direction: column; align-items: center; }
+.countdown-unit b { font-size: 1.4rem; font-weight: 800; color: var(--color-text); }
+.countdown-unit small { font-size: 0.65rem; text-transform: uppercase; color: var(--color-muted); }
+.countdown-sep { font-size: 1.2rem; color: var(--color-muted); margin-bottom: 6px; }
+
+.ticket-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.ticket-type:hover { border-color: var(--color-accent); }
+.ticket-type.selected {
+  border-color: var(--color-accent);
+  background: rgba(34,197,94,0.06);
+}
+.ticket-type.sold-out { opacity: 0.5; cursor: not-allowed; }
+.ticket-type-name { font-weight: 600; font-size: 0.92rem; }
+.ticket-type-avail { font-size: 0.77rem; color: var(--color-muted); margin-top: 2px; }
+.ticket-price-tag { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+
+.qty-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+.qty-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+  cursor: pointer; border: none;
+}
+.qty-btn:hover { background: var(--color-accent); color: white; }
+.qty-value { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; }
+.price-breakdown { border-top: 1px solid var(--color-border); padding-top: 1rem; margin: 1rem 0; }
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.87rem;
+  color: var(--color-text-soft);
+  margin-bottom: 0.4rem;
+}
+.price-row.total {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 0.5rem;
+}
+
+/* Schedule */
+.schedule-list { list-style: none; }
+.schedule-item {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  align-items: flex-start;
+}
+.schedule-time {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  min-width: 60px;
+  padding-top: 2px;
+}
+
+/* Map placeholder */
+.map-placeholder {
+  height: 280px;
+  background: var(--color-secondary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  border: 2px dashed var(--color-border);
+}
+.map-placeholder .map-icon { font-size: 2.5rem; }
+
+/* Organizer profile */
+.organizer-card {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+.organizer-avatar {
+  width: 60px; height: 60px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.organizer-meta h4 { font-size: 1rem; margin-bottom: 0.25rem; }
+.organizer-meta p { font-size: 0.85rem; color: var(--color-text-soft); line-height: 1.5; }
+
+/* ── Checkout Page ────────────────────────────────────────── */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2.5rem;
+  align-items: start;
+  padding: 3rem 0;
+}
+.checkout-form-card, .checkout-summary {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+.form-section { margin-bottom: 2rem; }
+.form-section h3 { font-size: 1rem; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
+}
+.form-textarea { min-height: 100px; resize: vertical; }
+
+/* Payment Placeholder */
+.payment-card-preview {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  color: white;
+  margin-bottom: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.payment-card-preview::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.card-chip { font-size: 1.4rem; margin-bottom: 1rem; }
+.card-number-placeholder { font-family: monospace; font-size: 1rem; letter-spacing: 0.2em; margin-bottom: 1rem; color: rgba(255,255,255,0.7); }
+
+/* Success state */
+.success-state {
+  display: none;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.success-state.visible { display: block; }
+.success-checkmark {
+  width: 72px; height: 72px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ── Dashboard ────────────────────────────────────────────── */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0;
+  min-height: calc(100vh - var(--nav-h));
+}
+.sidebar {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: 2rem 1.25rem;
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  overflow-y: auto;
+}
+.sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.sidebar-nav-item:hover { background: var(--color-secondary); color: var(--color-text); }
+.sidebar-nav-item.active { background: rgba(34,197,94,0.12); color: var(--color-accent-dark); font-weight: 600; }
+.sidebar-nav-item svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.dashboard-main { padding: 2.5rem; overflow: hidden; }
+.dashboard-header { margin-bottom: 2rem; }
+.dashboard-header h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+.dashboard-header p { color: var(--color-text-soft); font-size: 0.9rem; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  transition: box-shadow var(--transition);
+}
+.stat-card:hover { box-shadow: var(--shadow-md); }
+.stat-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-muted); margin-bottom: 0.5rem; }
+.stat-value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; }
+.stat-change { font-size: 0.8rem; color: var(--color-accent); margin-top: 0.25rem; }
+
+/* Table */
+.table-wrap {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.table-header h3 { font-size: 1rem; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-muted);
+  font-weight: 700;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+.data-table td {
+  padding: 1rem;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+.table-row:last-child td { border-bottom: none; }
+.table-row:hover td { background: var(--color-secondary); }
+.table-event-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.table-event-name strong { display: block; font-size: 0.9rem; }
+.table-event-name small { font-size: 0.78rem; color: var(--color-muted); }
+.table-thumb {
+  width: 44px; height: 34px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.table-empty { text-align: center; padding: 3rem; color: var(--color-muted); }
+.table-actions { display: flex; gap: 4px; }
+
+.tickets-bar-wrap { display: flex; flex-direction: column; gap: 4px; }
+.tickets-bar-wrap span { font-size: 0.8rem; }
+.tickets-bar {
+  height: 5px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+  width: 100px;
+}
+.tickets-bar-fill { height: 100%; background: var(--color-accent); border-radius: 3px; }
+
+.status-badge {
+  display: inline-flex;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+.status-upcoming { background: rgba(34,197,94,0.12); color: #16a34a; }
+.status-past { background: var(--color-secondary); color: var(--color-muted); }
+
+/* Dashboard panels */
+[data-panel] { display: none; }
+[data-panel].active { display: block; }
+
+/* Dashboard tabs */
+.dash-tabs { display: flex; gap: 4px; }
+[data-tab] {
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+[data-tab].active { background: var(--color-accent); color: white; }
+[data-tab]:hover:not(.active) { background: var(--color-secondary); color: var(--color-text); }
+
+/* Create event form */
+.create-form-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 800px;
+}
+.create-form-card h3 { margin-bottom: 1.5rem; }
+
+/* ── Profile Page ─────────────────────────────────────────── */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  padding: 3rem 0;
+  align-items: start;
+}
+.profile-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  position: sticky;
+  top: calc(var(--nav-h) + 1.5rem);
+}
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  border: 3px solid var(--color-accent);
+}
+.profile-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.profile-email { font-size: 0.84rem; color: var(--color-muted); margin-bottom: 1.5rem; }
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.25rem;
+}
+.profile-stat strong { display: block; font-size: 1.3rem; font-weight: 800; }
+.profile-stat small { font-size: 0.75rem; color: var(--color-muted); }
+
+/* Ticket Cards */
+.tickets-list { display: flex; flex-direction: column; gap: 1rem; }
+.ticket-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  transition: box-shadow var(--transition);
+}
+.ticket-card:hover { box-shadow: var(--shadow-md); }
+.ticket-accent-bar {
+  width: 6px;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+.ticket-body {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.ticket-info h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+.ticket-meta-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+.ticket-meta-item { font-size: 0.82rem; color: var(--color-text-soft); }
+.ticket-id { font-size: 0.75rem; color: var(--color-muted); font-family: monospace; margin-top: 0.4rem; }
+.ticket-qr {
+  width: 72px; height: 72px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+.ticket-actions { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
+.ticket-status { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); background: rgba(34,197,94,0.1); padding: 0.25rem 0.75rem; border-radius: 100px; margin-bottom: 0.25rem; }
+
+/* ── Footer ───────────────────────────────────────────────── */
+.footer {
+  background: var(--color-primary);
+  color: rgba(255,255,255,0.7);
+  padding: 4rem 0 2rem;
+  margin-top: auto;
+}
+html.dark .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+.footer-brand .nav-logo { color: white; margin-bottom: 1rem; }
+.footer-brand p { font-size: 0.88rem; max-width: 260px; line-height: 1.7; }
+.footer-col h4 { color: white; font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col ul a { font-size: 0.85rem; transition: color var(--transition); }
+.footer-col ul a:hover { color: var(--color-accent); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.4);
+}
+.social-links { display: flex; gap: 0.75rem; }
+.social-link {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: background var(--transition);
+}
+.social-link:hover { background: var(--color-accent); }
+
+/* ── Toasts ───────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.85rem 1.25rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.3s ease;
+}
+html.dark .toast { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text); }
+.toast.visible { opacity: 1; transform: none; }
+.toast-success .toast-icon { color: var(--color-accent); }
+.toast-error .toast-icon { color: #ef4444; }
+.toast-icon { font-size: 1rem; }
+
+/* ── Loading ──────────────────────────────────────────────── */
+.loading-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-muted);
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Empty State ──────────────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+}
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state h3 { margin-bottom: 0.5rem; }
+.empty-state p { color: var(--color-muted); margin-bottom: 1.5rem; }
+
+/* ── Page Header Banner ───────────────────────────────────── */
+.page-banner {
+  background: var(--color-primary);
+  padding: 3.5rem 0;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+html.dark .page-banner { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+.page-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 50%;
+  height: 100%;
+  background: radial-gradient(circle at 80% 50%, rgba(34,197,94,0.12), transparent 60%);
+  pointer-events: none;
+}
+.page-banner h1 { color: white; font-size: clamp(1.6rem, 4vw, 2.5rem); margin-bottom: 0.4rem; }
+html.dark .page-banner h1 { color: var(--color-text); }
+.page-banner p { color: rgba(255,255,255,0.6); }
+html.dark .page-banner p { color: var(--color-text-soft); }
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.75rem;
+}
+.breadcrumb a { color: var(--color-accent); }
+.breadcrumb span { color: rgba(255,255,255,0.3); }
+
+/* ── Chart section ────────────────────────────────────────── */
+.chart-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.chart-card h3 { font-size: 0.95rem; margin-bottom: 1rem; }
+#revenueChart { width: 100%; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .categories-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .events-layout { grid-template-columns: 1fr; }
+  .filter-sidebar { position: static; }
+  .event-content-layout { grid-template-columns: 1fr; }
+  .ticket-widget { position: static; }
+  .checkout-layout { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .profile-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .section { padding: 3.5rem 0; }
+  .hero { min-height: 80vh; }
+  .hero-stats { display: none; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .events-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-toggle { display: flex; }
+  .cta-banner { flex-direction: column; padding: 2.5rem; text-align: center; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .ticket-body { flex-direction: column; align-items: flex-start; }
+  .ticket-qr { display: none; }
+  .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .hero-search { flex-direction: column; border-radius: var(--radius-lg); }
+  .hero-search .btn { border-radius: var(--radius-md); margin: 0 0.5rem 0.5rem; }
+}
+
+/* Mobile Nav */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: var(--nav-h) 0 0 0;
+  background: var(--color-bg);
+  z-index: 99;
+  padding: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .nav-link { font-size: 1.1rem; font-weight: 600; padding: 0.5rem 0; }
+
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark">⚡</div>PaceUp
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="events.html" class="nav-link">Events</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="profile.html" class="nav-link">My Races</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="darkModeToggle" class="btn btn-ghost btn-sm">🌙</button>
+    </div>
+    <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="nav-link">Home</a>
+  <a href="events.html" class="nav-link">Events</a>
+  <a href="profile.html" class="nav-link">My Races</a>
+</div>
+
+<!-- Hero Image -->
+<div class="event-hero" id="eventHero">
+  <img id="eventHeroImg" src="" alt="" class="event-hero-img"/>
+  <div class="event-hero-overlay"></div>
+  <div class="container event-hero-meta">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="events.html">Events</a><span>/</span>
+      <span id="breadcrumbTitle">…</span>
+    </div>
+    <h1 id="eventTitle">Loading…</h1>
+    <div class="meta-row" id="eventMetaRow">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="event-content-layout">
+
+    <!-- Left: Tabs -->
+    <div>
+      <div class="event-tabs">
+        <button class="event-tab-btn active" data-etab="overview">Overview</button>
+        <button class="event-tab-btn" data-etab="schedule">Schedule</button>
+        <button class="event-tab-btn" data-etab="location">Location</button>
+        <button class="event-tab-btn" data-etab="organizer">Organizer</button>
+      </div>
+
+      <!-- Overview -->
+      <div class="event-tab-panel active" data-epanel="overview">
+        <p id="eventDescription" style="color:var(--color-text-soft); line-height:1.8; margin-bottom:2rem;"></p>
+        <div id="eventTags" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem;"></div>
+        <div id="distancesSection">
+          <h3 style="margin-bottom:1rem;">Race Distances</h3>
+          <div id="distancesList"></div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="event-tab-panel" data-epanel="schedule">
+        <h3 style="margin-bottom:1.5rem;">Race Day Schedule</h3>
+        <ul class="schedule-list" id="scheduleList"></ul>
+      </div>
+
+      <!-- Location -->
+      <div class="event-tab-panel" data-epanel="location">
+        <h3 style="margin-bottom:1rem;" id="locationHeading"></h3>
+        <div class="map-placeholder">
+          <div class="map-icon">🗺️</div>
+          <strong id="mapLocationLabel"></strong>
+          <p style="font-size:0.82rem; text-align:center;">Interactive map will load here.<br>Integrate Google Maps or Mapbox with an API key.</p>
+        </div>
+        <div style="margin-top:1.5rem; padding:1rem; background:var(--color-surface); border-radius:var(--radius-md); border:1px solid var(--color-border);">
+          <p style="font-size:0.85rem; color:var(--color-text-soft);">
+            📍 <strong id="locationDetail"></strong><br>
+            Parking, transport information and venue details will be sent with your race pack.
+          </p>
+        </div>
+      </div>
+
+      <!-- Organizer -->
+      <div class="event-tab-panel" data-epanel="organizer">
+        <h3 style="margin-bottom:1.5rem;">About the Organizer</h3>
+        <div class="organizer-card" id="organizerCard"></div>
+      </div>
+    </div>
+
+    <!-- Right: Ticket Widget -->
+    <div>
+      <div class="ticket-widget">
+        <h3>Register for This Race</h3>
+        <p style="font-size:0.84rem; color:var(--color-muted); margin-bottom:0.5rem;" id="spotsText"></p>
+
+        <!-- Countdown -->
+        <div class="countdown-box">
+          <div class="countdown-label">Race starts in</div>
+          <div class="countdown" id="countdown"></div>
+        </div>
+
+        <!-- Ticket Types -->
+        <div id="ticketTypes"></div>
+
+        <!-- Quantity -->
+        <div class="qty-selector">
+          <span style="font-size:0.85rem; font-weight:500;">Quantity</span>
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <button class="qty-btn" id="qtyMinus">−</button>
+            <span class="qty-value" id="qtyValue">1</span>
+            <button class="qty-btn" id="qtyPlus">+</button>
+          </div>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span id="priceLabel">Ticket × 1</span>
+            <span id="priceSubtotal">$0</span>
+          </div>
+          <div class="price-row">
+            <span>Service fee (5%)</span>
+            <span id="priceFee">$0</span>
+          </div>
+          <div class="price-row total">
+            <span>Total</span>
+            <span id="priceTotal">$0</span>
+          </div>
+        </div>
+
+        <a id="checkoutBtn" href="#" class="btn btn-primary" style="width:100%; justify-content:center;">
+          Register Now →
+        </a>
+        <p style="font-size:0.75rem; color:var(--color-muted); text-align:center; margin-top:0.75rem;">
+          Secure checkout · Instant confirmation
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Related Events -->
+<section class="section" style="background:var(--color-surface);">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="section-label">More Races</p>
+        <h2>You Might Also Like</h2>
+      </div>
+      <a href="events.html" class="btn btn-outline">View All →</a>
+    </div>
+    <div class="events-grid" id="relatedEvents"></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="justify-content:center; padding:1.5rem 0;">
+      <span>© 2026 PaceUp — Find Your Next Race 🏁</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+// ── Event Detail Page Logic ──────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const id = URLParams.get('id');
+  const event = DataService.getEventById(id);
+
+  if (!event) {
+    document.getElementById('eventTitle').textContent = 'Event not found';
+    return;
+  }
+
+  // Populate hero
+  document.title = `${event.title} — PaceUp`;
+  document.getElementById('eventHeroImg').src = event.image;
+  document.getElementById('eventHeroImg').alt = event.title;
+  document.getElementById('eventTitle').textContent = event.title;
+  document.getElementById('breadcrumbTitle').textContent = event.title;
+
+  // Hero meta
+  document.getElementById('eventMetaRow').innerHTML = `
+    <span class="meta-item">
+      <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      ${DataService.formatDate(event.date)} · ${event.time}
+    </span>
+    <span class="meta-item">
+      <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      ${event.location}
+    </span>
+    <span class="meta-item">
+      <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      ${event.distance}
+    </span>
+    <span class="meta-item" style="color:#86efac;">
+      From $${Math.min(...event.ticketTypes.map(t => t.price))}
+    </span>
+  `;
+
+  // Overview
+  document.getElementById('eventDescription').textContent = event.description;
+  document.getElementById('eventTags').innerHTML = (event.tags || []).map(t =>
+    `<span class="badge badge-accent">${t}</span>`
+  ).join('');
+
+  // Schedule
+  document.getElementById('scheduleList').innerHTML = event.schedule.map(s => `
+    <li class="schedule-item">
+      <span class="schedule-time">${s.time}</span>
+      <span>${s.activity}</span>
+    </li>
+  `).join('');
+
+  // Location
+  document.getElementById('locationHeading').textContent = `Race Venue: ${event.location}`;
+  document.getElementById('mapLocationLabel').textContent = event.location;
+  document.getElementById('locationDetail').textContent = event.location;
+
+  // Organizer
+  const org = DataService.getOrganizerById(event.organizerId);
+  if (org) {
+    document.getElementById('organizerCard').innerHTML = `
+      <img src="${org.logo}" alt="${org.name}" class="organizer-avatar"/>
+      <div class="organizer-meta">
+        <h4>${org.name}</h4>
+        <p>${org.bio}</p>
+        <p style="margin-top:0.5rem; font-size:0.8rem; color:var(--color-muted);">
+          🌍 ${org.location} · ${org.eventsCount} events organized
+        </p>
+      </div>
+    `;
+  }
+
+  // Spots remaining
+  const spotsLeft = event.maxParticipants - event.registered;
+  document.getElementById('spotsText').textContent =
+    spotsLeft < 200 ? `⚡ Only ${spotsLeft} spots remaining!` : `${spotsLeft} spots available`;
+
+  // Ticket types
+  let selectedTicket = event.ticketTypes.find(t => t.available > 0) || event.ticketTypes[0];
+  renderTicketTypes();
+  function renderTicketTypes() {
+    document.getElementById('ticketTypes').innerHTML = event.ticketTypes.map(t => `
+      <div class="ticket-type ${t.id === selectedTicket.id ? 'selected' : ''} ${t.available === 0 ? 'sold-out' : ''}"
+           onclick="${t.available > 0 ? `selectTicket('${t.id}')` : ''}">
+        <div>
+          <div class="ticket-type-name">${t.name} ${t.available === 0 ? '· Sold Out' : ''}</div>
+          <div class="ticket-type-avail">${t.available > 0 ? `${t.available} left` : 'Unavailable'}</div>
+        </div>
+        <div class="ticket-price-tag">$${t.price}</div>
+      </div>
+    `).join('');
+  }
+
+  window.selectTicket = (ticketId) => {
+    selectedTicket = event.ticketTypes.find(t => t.id === ticketId);
+    renderTicketTypes();
+    updatePrice();
+  };
+
+  // Quantity
+  let qty = 1;
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    if (qty > 1) { qty--; document.getElementById('qtyValue').textContent = qty; updatePrice(); }
+  });
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    if (qty < 10) { qty++; document.getElementById('qtyValue').textContent = qty; updatePrice(); }
+  });
+
+  function updatePrice() {
+    const sub = selectedTicket.price * qty;
+    const fee = Math.round(sub * 0.05 * 100) / 100;
+    const total = sub + fee;
+    document.getElementById('priceLabel').textContent = `${selectedTicket.name} × ${qty}`;
+    document.getElementById('priceSubtotal').textContent = `$${sub}`;
+    document.getElementById('priceFee').textContent = `$${fee.toFixed(2)}`;
+    document.getElementById('priceTotal').textContent = `$${total.toFixed(2)}`;
+  }
+  updatePrice();
+
+  // Checkout link
+  document.getElementById('checkoutBtn').href =
+    `checkout.html?eventId=${event.id}&ticketId=${selectedTicket.id}&qty=1`;
+
+  // Countdown
+  initCountdown(document.getElementById('countdown'), event.date);
+
+  // Tab switching
+  document.querySelectorAll('.event-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.event-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.event-tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`[data-epanel="${btn.dataset.etab}"]`)?.classList.add('active');
+    });
+  });
+
+  // Related events
+  const related = DataService.getEvents()
+    .filter(e => e.id !== event.id && (e.distance === event.distance || e.organizerId === event.organizerId))
+    .slice(0, 3);
+  document.getElementById('relatedEvents').innerHTML = related.map(renderEventCard).join('');
+});
+</script>
+<script>
+// ============================================================
+// data.js — Mock Database (simulates backend API responses)
+// Replace these arrays with real API calls when migrating
+// ============================================================
+
+const DB = {
+
+  // ── EVENTS ──────────────────────────────────────────────
+  events: [
+    {
+      id: 1,
+      title: "Berlin City Marathon",
+      slug: "berlin-city-marathon",
+      organizer: "RunFast Co.",
+      organizerId: 1,
+      date: "2026-05-10",
+      time: "07:30",
+      distance: "Marathon",
+      location: "Berlin, Germany",
+      price: 45,
+      image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&q=80",
+      description: "Experience the iconic Berlin streets in this world-class marathon. Run through historic landmarks, cheer stations every mile, and a festival atmosphere at the finish line.",
+      maxParticipants: 5000,
+      registered: 3240,
+      featured: true,
+      tags: ["City", "Road", "Flat Course"],
+      ticketTypes: [
+        { id: "t1", name: "Early Bird", price: 25, available: 0 },
+        { id: "t2", name: "Standard", price: 45, available: 500 },
+        { id: "t3", name: "VIP Package", price: 80, available: 50 }
+      ],
+      schedule: [
+        { time: "06:00", activity: "Registration & Bib Pickup" },
+        { time: "07:00", activity: "Warm-Up Zone Opens" },
+        { time: "07:30", activity: "Race Start — Wave A" },
+        { time: "08:00", activity: "Race Start — Wave B & C" },
+        { time: "14:00", activity: "Finish Line Closes" },
+        { time: "15:00", activity: "Awards Ceremony" }
+      ]
+    },
+    {
+      id: 2,
+      title: "Alpine Trail 50K",
+      slug: "alpine-trail-50k",
+      organizer: "Peak Runners",
+      organizerId: 2,
+      date: "2026-06-15",
+      time: "06:00",
+      distance: "Trail Run",
+      location: "Innsbruck, Austria",
+      price: 65,
+      image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&q=80",
+      description: "Conquer the Alps in this breathtaking 50K trail run through pristine mountain wilderness. Technical terrain, dramatic elevation, and views that will stay with you forever.",
+      maxParticipants: 500,
+      registered: 387,
+      featured: true,
+      tags: ["Trail", "Mountain", "Technical"],
+      ticketTypes: [
+        { id: "t1", name: "Early Bird", price: 45, available: 0 },
+        { id: "t2", name: "Standard", price: 65, available: 113 },
+        { id: "t3", name: "Elite Wave", price: 95, available: 20 }
+      ],
+      schedule: [
+        { time: "05:30", activity: "Check-In Opens" },
+        { time: "06:00", activity: "Race Start" },
+        { time: "18:00", activity: "Cutoff Time" },
+        { time: "19:00", activity: "Prize Giving" }
+      ]
+    },
+    {
+      id: 3,
+      title: "Sunset Half Marathon",
+      slug: "sunset-half-marathon",
+      organizer: "City Pace Events",
+      organizerId: 3,
+      date: "2026-04-20",
+      time: "17:00",
+      distance: "Half Marathon",
+      location: "Barcelona, Spain",
+      price: 35,
+      image: "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=800&q=80",
+      description: "Race along Barcelona's stunning seafront as the Mediterranean sun dips below the horizon. A magical evening race with a spectacular beach finish.",
+      maxParticipants: 2000,
+      registered: 1650,
+      featured: true,
+      tags: ["City", "Coastal", "Evening"],
+      ticketTypes: [
+        { id: "t1", name: "Early Bird", price: 22, available: 0 },
+        { id: "t2", name: "Standard", price: 35, available: 350 },
+        { id: "t3", name: "VIP", price: 60, available: 30 }
+      ],
+      schedule: [
+        { time: "15:00", activity: "Registration Opens" },
+        { time: "16:30", activity: "Warm-Up" },
+        { time: "17:00", activity: "Race Start" },
+        { time: "20:30", activity: "Finish Line Closes" },
+        { time: "21:00", activity: "Beach Party & Awards" }
+      ]
+    },
+    {
+      id: 4,
+      title: "Neon 5K Night Run",
+      slug: "neon-5k-night-run",
+      organizer: "City Pace Events",
+      organizerId: 3,
+      date: "2026-07-04",
+      time: "21:00",
+      distance: "5K",
+      location: "Amsterdam, Netherlands",
+      price: 20,
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&q=80",
+      description: "Glow, run, celebrate! This neon-lit 5K turns Amsterdam's streets into a glowing party. All abilities welcome — run, jog, or walk.",
+      maxParticipants: 3000,
+      registered: 2100,
+      featured: false,
+      tags: ["Fun", "Night", "Beginner Friendly"],
+      ticketTypes: [
+        { id: "t1", name: "Standard", price: 20, available: 900 },
+        { id: "t2", name: "Neon Pack", price: 35, available: 200 }
+      ],
+      schedule: [
+        { time: "19:00", activity: "Check-In & Neon Zone Opens" },
+        { time: "20:30", activity: "Pre-Race Party" },
+        { time: "21:00", activity: "Race Start" },
+        { time: "22:30", activity: "After Party" }
+      ]
+    },
+    {
+      id: 5,
+      title: "London 10K Classic",
+      slug: "london-10k-classic",
+      organizer: "RunFast Co.",
+      organizerId: 1,
+      date: "2026-08-12",
+      time: "09:00",
+      distance: "10K",
+      location: "London, UK",
+      price: 30,
+      image: "https://images.unsplash.com/photo-1596727147705-61a532a659bd?w=800&q=80",
+      description: "Run through the heart of London past iconic landmarks. The most scenic 10K in the UK.",
+      maxParticipants: 4000,
+      registered: 1800,
+      featured: true,
+      tags: ["City", "Iconic", "Road"],
+      ticketTypes: [
+        { id: "t1", name: "Early Bird", price: 20, available: 0 },
+        { id: "t2", name: "Standard", price: 30, available: 2200 },
+        { id: "t3", name: "VIP", price: 55, available: 100 }
+      ],
+      schedule: [
+        { time: "07:30", activity: "Registration & Bib Collection" },
+        { time: "08:45", activity: "Start Area Opens" },
+        { time: "09:00", activity: "Race Start" },
+        { time: "12:00", activity: "Finish Line Closes" },
+        { time: "12:30", activity: "Awards & Prize Giving" }
+      ]
+    },
+    {
+      id: 6,
+      title: "Forest Ultra 100K",
+      slug: "forest-ultra-100k",
+      organizer: "Peak Runners",
+      organizerId: 2,
+      date: "2026-09-19",
+      time: "05:00",
+      distance: "Trail Run",
+      location: "Black Forest, Germany",
+      price: 85,
+      image: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80",
+      description: "An epic 100K journey through ancient German forests. This is the ultimate test of endurance — a bucket-list race for serious ultra runners.",
+      maxParticipants: 300,
+      registered: 198,
+      featured: false,
+      tags: ["Ultra", "Trail", "Forest", "Challenging"],
+      ticketTypes: [
+        { id: "t1", name: "Standard", price: 85, available: 102 },
+        { id: "t2", name: "Elite Entry", price: 120, available: 15 }
+      ],
+      schedule: [
+        { time: "04:00", activity: "Mandatory Gear Check" },
+        { time: "05:00", activity: "Race Start" },
+        { time: "29:00", activity: "Cutoff Time (next day 10:00)" },
+        { time: "30:00", activity: "Awards Ceremony" }
+      ]
+    }
+  ],
+
+  // ── ORGANIZERS ───────────────────────────────────────────
+  organizers: [
+    {
+      id: 1,
+      name: "RunFast Co.",
+      logo: "https://ui-avatars.com/api/?name=RunFast+Co&background=22c55e&color=fff&size=80",
+      bio: "Premium running event organizers with 10+ years experience creating world-class races across Europe.",
+      eventsCount: 24,
+      location: "Berlin, Germany",
+      website: "runfast.co"
+    },
+    {
+      id: 2,
+      name: "Peak Runners",
+      logo: "https://ui-avatars.com/api/?name=Peak+Runners&background=111827&color=fff&size=80",
+      bio: "Specialist mountain and trail run organizers. We find the wildest routes so you can discover your limits.",
+      eventsCount: 12,
+      location: "Innsbruck, Austria",
+      website: "peakrunners.at"
+    },
+    {
+      id: 3,
+      name: "City Pace Events",
+      logo: "https://ui-avatars.com/api/?name=City+Pace&background=3b82f6&color=fff&size=80",
+      bio: "Urban race specialists bringing energy, color, and community to city streets worldwide.",
+      eventsCount: 18,
+      location: "Barcelona, Spain",
+      website: "citypace.es"
+    }
+  ],
+
+  // ── USERS ────────────────────────────────────────────────
+  currentUser: {
+    id: 1,
+    name: "Alex Runner",
+    email: "alex@example.com",
+    avatar: "https://ui-avatars.com/api/?name=Alex+Runner&background=22c55e&color=fff&size=80",
+    tickets: [
+      {
+        id: "TKT-001",
+        eventId: 3,
+        eventTitle: "Sunset Half Marathon",
+        eventDate: "2026-04-20",
+        eventLocation: "Barcelona, Spain",
+        ticketType: "Standard",
+        price: 35,
+        purchaseDate: "2025-12-15",
+        status: "confirmed"
+      },
+      {
+        id: "TKT-002",
+        eventId: 1,
+        eventTitle: "Berlin City Marathon",
+        eventDate: "2026-05-10",
+        eventLocation: "Berlin, Germany",
+        ticketType: "VIP Package",
+        price: 80,
+        purchaseDate: "2026-01-03",
+        status: "confirmed"
+      }
+    ]
+  },
+
+  // ── CATEGORIES ──────────────────────────────────────────
+  categories: [
+    { name: "5K", icon: "⚡", count: 28, color: "#22c55e" },
+    { name: "10K", icon: "🏃", count: 45, color: "#3b82f6" },
+    { name: "Half Marathon", icon: "🎯", count: 32, color: "#f59e0b" },
+    { name: "Marathon", icon: "🏆", count: 19, color: "#ef4444" },
+    { name: "Trail Run", icon: "🏔️", count: 24, color: "#8b5cf6" }
+  ]
+};
+
+// ── Helper functions ─────────────────────────────────────
+const DataService = {
+
+  getEvents: () => [...DB.events],
+
+  getFeaturedEvents: () => DB.events.filter(e => e.featured),
+
+  getEventById: (id) => DB.events.find(e => e.id === parseInt(id)),
+
+  getEventBySlug: (slug) => DB.events.find(e => e.slug === slug),
+
+  getOrganizerById: (id) => DB.organizers.find(o => o.id === parseInt(id)),
+
+  filterEvents: ({ distance, location, organizer, maxPrice, sortBy } = {}) => {
+    let results = [...DB.events];
+    if (distance && distance !== 'all') results = results.filter(e => e.distance === distance);
+    if (location) results = results.filter(e => e.location.toLowerCase().includes(location.toLowerCase()));
+    if (organizer && organizer !== 'all') results = results.filter(e => e.organizerId === parseInt(organizer));
+    if (maxPrice) results = results.filter(e => e.price <= parseInt(maxPrice));
+    if (sortBy === 'date') results.sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (sortBy === 'price') results.sort((a, b) => a.price - b.price);
+    if (sortBy === 'popular') results.sort((a, b) => b.registered - a.registered);
+    return results;
+  },
+
+  getCurrentUser: () => ({ ...DB.currentUser }),
+
+  getCategories: () => [...DB.categories],
+
+  getOrganizers: () => [...DB.organizers],
+
+  // Simulate adding event (dashboard)
+  addEvent: (eventData) => {
+    const newEvent = {
+      id: DB.events.length + 1,
+      ...eventData,
+      registered: 0,
+      featured: false,
+      ticketTypes: [
+        { id: "t1", name: "Early Bird", price: Math.round(eventData.price * 0.7), available: 50 },
+        { id: "t2", name: "Standard", price: eventData.price, available: eventData.maxParticipants - 50 }
+      ]
+    };
+    DB.events.push(newEvent);
+    return newEvent;
+  },
+
+  deleteEvent: (id) => {
+    const idx = DB.events.findIndex(e => e.id === parseInt(id));
+    if (idx > -1) DB.events.splice(idx, 1);
+  },
+
+  // Format helpers
+  formatDate: (dateStr) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  },
+
+  getDaysUntil: (dateStr) => {
+    const today = new Date();
+    const event = new Date(dateStr);
+    const diff = event - today;
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  }
+};
+
+</script>
+<script>
+// ============================================================
+// app.js — Shared utilities, navbar, init logic
+// Loaded on every page
+// ============================================================
+
+// ── Navbar ──────────────────────────────────────────────────
+function initNavbar() {
+  const nav = document.querySelector('.navbar');
+  if (!nav) return;
+
+  // Sticky shadow on scroll
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Mobile menu toggle
+  const toggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (toggle && mobileMenu) {
+    toggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+  }
+
+  // Highlight active nav link
+  const currentPage = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// ── Toast Notifications ──────────────────────────────────────
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
+    <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('visible'));
+  setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+
+// ── Loading State ────────────────────────────────────────────
+function showLoading(container) {
+  container.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading events…</p>
+    </div>
+  `;
+}
+
+// ── URL Params Helper ────────────────────────────────────────
+const URLParams = {
+  get: (key) => new URLSearchParams(window.location.search).get(key),
+  set: (params) => {
+    const url = new URL(window.location);
+    Object.entries(params).forEach(([k, v]) => {
+      if (v) url.searchParams.set(k, v);
+      else url.searchParams.delete(k);
+    });
+    window.history.pushState({}, '', url);
+  }
+};
+
+// ── Countdown Timer ──────────────────────────────────────────
+function initCountdown(el, targetDate) {
+  function tick() {
+    const now = new Date();
+    const target = new Date(targetDate);
+    const diff = target - now;
+    if (diff <= 0) { el.textContent = 'Race Day!'; return; }
+    const days = Math.floor(diff / 86400000);
+    const hrs = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    el.innerHTML = `
+      <span class="countdown-unit"><b>${days}</b><small>d</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><b>${String(hrs).padStart(2,'0')}</b><small>h</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><b>${String(mins).padStart(2,'0')}</b><small>m</small></span>
+      <span class="countdown-sep">:</span>
+      <span class="countdown-unit"><b>${String(secs).padStart(2,'0')}</b><small>s</small></span>
+    `;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ── Event Card Template ──────────────────────────────────────
+function renderEventCard(event) {
+  const daysUntil = DataService.getDaysUntil(event.date);
+  const spotsLeft = event.maxParticipants - event.registered;
+  const urgency = spotsLeft < 100 ? `<span class="badge badge-urgent">${spotsLeft} spots left</span>` : '';
+
+  return `
+    <article class="event-card" data-id="${event.id}">
+      <a href="event.html?id=${event.id}" class="card-link">
+        <div class="card-img-wrap">
+          <img src="${event.image}" alt="${event.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&q=60'">
+          <span class="badge badge-distance">${event.distance}</span>
+          ${urgency}
+        </div>
+        <div class="card-body">
+          <div class="card-organizer">
+            <span class="organizer-dot"></span>
+            ${event.organizer}
+          </div>
+          <h3 class="card-title">${event.title}</h3>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              ${DataService.formatDate(event.date)}
+            </span>
+            <span class="card-meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              ${event.location}
+            </span>
+          </div>
+          <div class="card-footer">
+            <span class="card-price">From $${Math.min(...event.ticketTypes.map(t => t.price))}</span>
+            <span class="card-cta">View Race →</span>
+          </div>
+        </div>
+      </a>
+    </article>
+  `;
+}
+
+// ── Dark Mode Toggle ─────────────────────────────────────────
+function initDarkMode() {
+  const btn = document.getElementById('darkModeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') document.documentElement.classList.add('dark');
+  btn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+  });
+  if (document.documentElement.classList.contains('dark')) btn.textContent = '☀️';
+}
+
+// ── Intersection Observer for Animations ────────────────────
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+}
+
+// ── Init on DOM Ready ────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initNavbar();
+  initDarkMode();
+  // Delay scroll animations slightly so layout is painted
+  setTimeout(initScrollAnimations, 100);
+});
+
+</script>
+<script>
+// ============================================================
+// events.js — Event loading, filtering, and rendering logic
+// Used on: events.html, and partially on index.html
+// ============================================================
+
+// ── Render Events Grid ───────────────────────────────────────
+function renderEventsGrid(events, containerId = 'eventsGrid') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (events.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🏁</div>
+        <h3>No races found</h3>
+        <p>Try adjusting your filters to discover more events.</p>
+        <button class="btn btn-outline" onclick="resetFilters()">Clear Filters</button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = events.map(renderEventCard).join('');
+
+  // Staggered animation
+  container.querySelectorAll('.event-card').forEach((card, i) => {
+    card.style.animationDelay = `${i * 60}ms`;
+    card.classList.add('card-appear');
+  });
+}
+
+// ── Build Filter UI ──────────────────────────────────────────
+function buildFilterUI() {
+  const organizers = DataService.getOrganizers();
+
+  // Populate organizer select
+  const orgSelect = document.getElementById('filterOrganizer');
+  if (orgSelect) {
+    organizers.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.id;
+      opt.textContent = o.name;
+      orgSelect.appendChild(opt);
+    });
+  }
+}
+
+// ── Read Filter State ────────────────────────────────────────
+function getFilterState() {
+  return {
+    distance: document.getElementById('filterDistance')?.value || '',
+    location: document.getElementById('filterLocation')?.value || '',
+    organizer: document.getElementById('filterOrganizer')?.value || '',
+    maxPrice: document.getElementById('filterPrice')?.value || '',
+    sortBy: document.getElementById('sortBy')?.value || 'date'
+  };
+}
+
+// ── Apply Filters ────────────────────────────────────────────
+function applyFilters() {
+  const filters = getFilterState();
+  const results = DataService.filterEvents(filters);
+  renderEventsGrid(results);
+  updateResultCount(results.length);
+  URLParams.set(filters);
+}
+
+// ── Reset Filters ────────────────────────────────────────────
+function resetFilters() {
+  ['filterDistance','filterLocation','filterOrganizer','filterPrice','sortBy'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  applyFilters();
+}
+
+// ── Update Result Count ──────────────────────────────────────
+function updateResultCount(count) {
+  const el = document.getElementById('resultCount');
+  if (el) el.textContent = `${count} race${count !== 1 ? 's' : ''} found`;
+}
+
+// ── Restore Filters from URL ─────────────────────────────────
+function restoreFiltersFromURL() {
+  const params = ['distance','location','organizer','maxPrice','sortBy'];
+  params.forEach(key => {
+    const val = URLParams.get(key);
+    const el = document.getElementById('filter' + key.charAt(0).toUpperCase() + key.slice(1))
+               || document.getElementById('sortBy');
+    if (val && el) el.value = val;
+  });
+}
+
+// ── Active Filter Pills ──────────────────────────────────────
+function renderFilterPills() {
+  const container = document.getElementById('filterPills');
+  if (!container) return;
+  const filters = getFilterState();
+  const pills = [];
+  if (filters.distance && filters.distance !== 'all') pills.push({ label: filters.distance, key: 'filterDistance' });
+  if (filters.location) pills.push({ label: filters.location, key: 'filterLocation' });
+  if (filters.organizer && filters.organizer !== 'all') {
+    const org = DataService.getOrganizerById(filters.organizer);
+    if (org) pills.push({ label: org.name, key: 'filterOrganizer' });
+  }
+  container.innerHTML = pills.map(p => `
+    <span class="filter-pill">
+      ${p.label}
+      <button onclick="document.getElementById('${p.key}').value=''; applyFilters()">×</button>
+    </span>
+  `).join('');
+}
+
+// ── Page Initialization ──────────────────────────────────────
+function initEventsPage() {
+  buildFilterUI();
+  restoreFiltersFromURL();
+  applyFilters();
+
+  // Attach filter event listeners
+  ['filterDistance','filterOrganizer','filterPrice','sortBy'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', applyFilters);
+  });
+
+  // Search on enter
+  document.getElementById('filterLocation')?.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') applyFilters();
+  });
+
+  // Filter sidebar toggle (mobile)
+  document.getElementById('toggleFilters')?.addEventListener('click', () => {
+    document.getElementById('filterSidebar')?.classList.toggle('open');
+  });
+}
+
+// ── Init Featured Events on Landing Page ─────────────────────
+function initFeaturedEvents() {
+  const container = document.getElementById('featuredEvents');
+  if (!container) return;
+  const featured = DataService.getFeaturedEvents().slice(0, 3);
+  container.innerHTML = featured.map(renderEventCard).join('');
+}
+
+// Run on events.html
+if (document.getElementById('eventsGrid')) {
+  document.addEventListener('DOMContentLoaded', initEventsPage);
+}
+
+// Run on index.html
+if (document.getElementById('featuredEvents')) {
+  document.addEventListener('DOMContentLoaded', initFeaturedEvents);
+}
+
+</script>
+</body>
+</html>
